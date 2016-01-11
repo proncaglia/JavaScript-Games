@@ -1,0 +1,102 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+
+<style>
+
+header
+{
+text-align:center;
+width:50%;
+margin:0 auto auto auto;
+font-size:26px;
+}
+
+section
+{
+    width:100%;
+    margin:0 auto auto auto;
+    padding-left:35%;
+}
+
+.recuadros
+{
+    border:1px #000000 solid;   
+    float:left;
+}
+
+#botones
+{
+    visibility:hidden;
+}
+
+</style>
+
+<script language="javascript">
+
+    var palabras = new Array('hola', 'juego', 'saludar');
+    var nro_juego = 0;
+    var errores = 0;
+    var puntos;
+    var aciertos = 0;
+
+    function letra(e) {
+        if (palabras[nro_juego - 1][e.id] != e.value) {
+            errores++;
+            document.getElementById('imagen').src = errores + ".png";
+            e.value = "";
+            if (errores == 7) {
+                document.getElementById('resultado').innerHTML = "Has perdido";
+                document.getElementById('botones').style.visibility = "visible";
+                desabilitar_casilleros();                      
+            }
+        } 
+        else 
+        {
+            aciertos++;
+            if (puntos == aciertos) {
+                document.getElementById('resultado').innerHTML = "Has ganado!";
+                document.getElementById('botones').style.visibility = "visible";
+                desabilitar_casilleros();
+            }                   
+        }
+    }
+
+    function dibujar_casilleros() {
+        document.getElementById('contenedor').innerHTML = "";
+        document.getElementById('imagen').src = "0.png";
+        document.getElementById('resultado').innerHTML = "";
+        for(i=0;i<palabras[nro_juego].length;i++) {
+            document.getElementById('contenedor').innerHTML += "<div class='recuadros'><input type='text' id='" + i + "' name='" + i + "' value='' onkeyup='letra(this);' size='2'></div>";
+        }
+    }
+
+    function cargar() 
+    {        
+        dibujar_casilleros();
+        nro_juego++;
+        if (nro_juego >= palabras.length) nro_juego = 0;
+        aciertos = 0;
+        puntos = palabras[nro_juego-1].length;
+        errores = 0;
+        document.getElementById('botones').style.visibility = "hidden";
+    }
+
+    function desabilitar_casilleros()
+    {
+        for(i=0;i<palabras[nro_juego].length;i++)document.getElementById(i).disabled = true;
+    }
+
+</script>
+
+    <title>Untitled Page</title>
+</head>
+<body onload="cargar();">
+    <header id="resultado"></header>
+    <section id="ahorcado"><img src="0.png" id="imagen" /></section>
+    <section id="contenedor"></section>
+    <br /><br /><br />
+    <section id="botones"><input type="button" value="Jugar de Nuevo" onclick='cargar();' /></section>
+    <footer></footer>
+</body>
+</html>
