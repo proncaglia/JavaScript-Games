@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style>
+        #tablero{
+            width:190px;
+        }
+        .recuadro{
+            border:1px #000000 solid;
+            width:50px;
+            height:50px;
+            float:left;
+        }
+    </style>
+    <script>
+        
+        window.onload = function () {
+            dibujar();
+            for (i = 0; i < 10; i++) butacas[i] = "";
+        }
+
+        var butacas = new Array(10);
+        function dibujar()
+        {
+            document.getElementById("tablero").innerHTML = "";
+            for (i = 0; i < 10; i++)
+            {
+                document.getElementById("tablero").innerHTML += "<div id='" + i + "' class='recuadro' onclick='reservar(this);'></div>";
+            }
+        }
+
+        function reservar(e)
+        {
+            var cliente = "";
+            if (document.getElementById(e.id).innerHTML == "")
+            {
+                cliente = prompt("Nombre de la reserva", "Ingrese el nombre del cliente:");
+                document.getElementById(e.id).innerHTML = "X";
+                butacas[e.id] = cliente;               
+            }
+            else
+            {
+                alert("Butaca reservada a nombre de: " + butacas[e.id]);
+            }
+        }
+
+        function disponibles() {
+            var d = 0;
+            for (i = 0; i < butacas.length; i++) {
+                if (butacas[i] == "") d++;
+            }
+            alert("Cantidad de butacas disponibles: " + d);
+        }
+
+        function reservadas() {
+            var r = 0;
+            for (i = 0; i < butacas.length; i++) {
+                if (butacas[i] != "") r++;
+            }
+            alert("Cantidad de butacas reservadas: " + r);
+        }
+
+
+
+    </script>
+    
+</head>
+<body>
+<div id="tablero"></div>
+<div id="botonera">
+    <input type="button" value="Lugares disponibles" onclick="disponibles();" />
+    <br />
+    <input type="button" value="Lugares reservados" onclick="reservadas();" />
+</div>
+</body>
+</html>

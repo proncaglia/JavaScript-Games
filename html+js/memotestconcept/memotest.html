@@ -1,0 +1,127 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style>
+        #tablero{
+            width:280px;
+            margin:auto;
+        }
+        .recuadro{
+            border:1px #000000 solid;
+            width:50px;
+            height:50px;
+            float:left;
+            overflow:hidden;
+            text-align:center;
+            line-height:50px;
+        }
+        #botonera{
+            visibility:hidden;	
+        }
+    </style>
+    <script>
+        window.onload = function () {
+            inicial();
+        }
+        function inicial()
+        {
+            dibujar();
+            asignarFichas();
+        }
+
+        var arr = new Array('A', 'A', 'B', 'B', 'C', 'C', 'D', 'D', 'E', 'E', 'F', 'F', 'G', 'G', 'H', 'H', 'I', 'I', 'J', 'J');
+        var puntos = 0;
+        var intentos = 0;
+        var clicks = 0;
+        var e1, e2;
+        var block = 0;
+
+        function Tablero()
+        {
+
+        }
+
+
+
+        function dibujar() {
+            puntos = 0;
+            intentos = 0;
+            clicks = 0;
+            e1 = "";
+            e2 = "";
+            block = 0;
+
+            document.getElementById("tablero").innerHTML = "";
+            document.getElementById("botonera").style.visibility = "hidden";
+            for (i = 0; i < 20; i++) {
+                document.getElementById("tablero").innerHTML += "<div id='" + i + "' class='recuadro' onclick='destapar(this);'></div>";
+            }
+        }
+
+        function asignarFichas() {
+            arr = arr.sort(function () { return Math.random() - 0.5 });
+        }
+        
+        function destapar(e)
+        {
+            if (block != 1) {
+                intentos++;
+                clicks++;
+                document.getElementById(e.id).innerHTML = arr[e.id];
+                if (clicks == 1) {
+                    e1 = e;
+                }
+                else if (clicks == 2) {
+                    e2 = e;
+                    comparar();
+                    clicks = 0;
+                }
+                else {
+                    clicks = 0;
+                }
+            }
+            
+        }
+
+        function comparar() {
+            if(e1.innerHTML == e2.innerHTML)
+            {
+                puntos++;
+            }
+            else
+            {
+                block = 1;
+                setTimeout(function () { blanquear(); }, 1000);
+                
+                
+            }
+            if (puntos == 10) {
+                alert("Fin del juego!....Puntos: " + puntos + " Intentos: " + intentos);
+                document.getElementById("botonera").style.visibility = "visible";
+            }
+        }
+
+        function blanquear() {
+
+            document.getElementById(e1.id).innerHTML = "";
+            document.getElementById(e2.id).innerHTML = "";
+            e1 = "";
+            e2 = "";
+            block = 0;
+
+            
+        }
+        
+    </script>
+
+</head>
+<body>
+    <div id="tablero"></div>
+    <div id="aleatorio"></div>
+    <div id="botonera"><input type="button" value="Jugar de nuevo" onclick="inicial();" /></div>
+
+</body>
+</html>
