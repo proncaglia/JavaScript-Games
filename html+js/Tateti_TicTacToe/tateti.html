@@ -1,0 +1,224 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style>
+        #tablero {
+            width: 190px;
+            margin:auto;
+        }
+        #turno {
+            margin:auto;
+            float:right;
+        }
+
+        .recuadro {
+            border:1px #000000 solid;
+            width:50px;
+            height:50px;
+            float:left;
+        }
+
+
+    </style>
+
+    <script>
+        window.onload = function () {
+            Inicial();
+        }
+        
+        function Inicial(x) {
+            // Dibujo tablero
+            t = new Tablero();
+            t.dibujar();
+            // Inicializar Vacios
+            document.getElementById("vacios").innerHTML = "";
+            // Inicializar turno
+            document.getElementById("turno").innerHTML = "";
+            // Inicializar resultado
+            document.getElementById("resultado").innerHTML = "";
+            // Asignar Turno
+            arbitro.asignarTurno();
+            // Especifica si juega contra la 1:PC o 0:Humano
+            pc = x;
+            turno = "";
+            lleno = 0;
+            click = 0;
+        }
+
+
+        function jugar(e) {
+            var j = new Jugador();
+            j.jugar(e);                
+        }
+
+
+        var arbitro = new Arbitro();
+        
+        var turno = "";
+        var lleno = 0;
+        var click = 0;
+        var pc = 0;
+
+        // Clase Tablero
+        function Tablero()
+        {
+            // Combinaciones validas
+            this.combinaciones = new Array([0, 1, 2],[3, 4, 5],[6, 7, 8],[0, 3, 6],[1, 4, 7],[2, 5, 8],[0, 4, 8],[2, 4, 6]);
+            
+            // Dibujar tableros
+            this.dibujar = function()
+            {
+                var t = document.getElementById("tablero");
+                t.innerHTML = "";
+                for (i = 0; i < 9; i++) {
+                    t.innerHTML+= "<div id='" + i + "' class='recuadro' onclick='jugar(this);'></div>";
+                }
+            }
+
+            // Comprueba ganador o empate
+            this.comprobar = function ()
+            {                
+                for(y=0;y<9;y++)
+                {
+                    var a = document.getElementById(this.combinaciones[y][0]).innerHTML;
+                    var b = document.getElementById(this.combinaciones[y][1]).innerHTML;
+                    var c = document.getElementById(this.combinaciones[y][2]).innerHTML;
+
+                    if (a != "" && b != "" && c != "")
+                    {
+                        if (a == b && b == c)
+                        {
+                            alert("Ganador Jugador: " + arbitro.turno);
+                            sessionStorage.setItem("Ganador", arbitro.turno);
+                            arbitro.resultado();
+                            break;
+                        }
+                    }
+                    if (click == 9)
+                    {
+                        alert("Empate!");
+                        break;
+                    }
+                    // Asigno el turno
+                    arbitro.asignarTurno();
+                }
+            }
+
+            this.vacios = function () {
+                // alert("vacios");
+                document.getElementById("vacios").innerHTML = "";
+
+                for (i = 0; i < 9; i++) {
+                    if (document.getElementById(i).innerHTML == "") {
+                        document.getElementById("vacios").innerHTML +=  i + " ";
+                    }
+                }
+                
+            }
+
+        }
+
+      
+
+        // Clase Jugador
+        function Jugador()
+        {
+            // Jugador realiza jugada (marca simbolo en el tablero)
+            this.jugar = function jugar(e)
+            {
+                if (pc != 1) {
+                    var celda = document.getElementById(e.id);
+                    if (celda.innerHTML == "") {
+                        celda.innerHTML = arbitro.turno;
+                        click++;
+                    }
+                }
+                else
+                {
+                    alert(arbitro.turno);
+                    for (i = 0; i < 9; i++)
+                    {
+                        alert(document.getElementById(i).innerHTML);
+                        if (document.getElementById(i).innerHTML == "")
+                        {
+                            document.getElementById(i).innerHTML = arbitro.turno;                    
+                            break;
+                        }
+                    }
+                }
+                var t = new Tablero();
+                t.vacios();
+                t.comprobar();
+            }
+
+
+        }
+
+        // Clase Arbitro
+        function Arbitro()
+        {
+            this.turno = "";
+            
+            // Arbitro asigna turno (si toca X o O)
+            this.asignarTurno = function () {
+                // alert("Turno: " + this.turno);
+
+                if (click % 2) {
+                    this.turno = "O";
+                }
+                else {
+                    this.turno = "X";
+                }
+                if (pc == 1) {
+                    if (click % 2) {
+                        document.getElementById("turno").innerHTML = "Le toca el turno a la PC: " + this.turno;
+                    }
+                }
+                else {
+                    document.getElementById("turno").innerHTML = "Le toca el turno al jugador: " + this.turno;
+                }
+            }
+
+            this.resultado = function ()
+            {
+                var ganador = "";
+                var perdedor = "";
+                if (sessionStorage.getItem("Ganador") == "X") {
+                    ganador = "X";
+                    perdedor = "O";
+                }
+                else
+                {
+                    ganador = "O";
+                    perdedor = "X";
+
+                }
+                document.getElementById("resultado").innerHTML = "Ganador: " + ganador + " perdedor: " + perdedor;
+            }
+
+        }
+
+
+
+    </script>
+
+
+</head>
+<body>
+    <div id="botonera">
+        <input type="button" value="Jugar de nuevo" onclick="Inicial(0);" />
+        <br />
+        <input type="button" value="Jugar contra la PC" onclick="Inicial(1);" />
+    </div>
+    <div id="turno"></div>
+    Recuadros vacios:
+    <div id="vacios"></div>
+    <div id="resultado"></div>
+    <div id="tablero"></div>
+
+
+</body>
+</html>
